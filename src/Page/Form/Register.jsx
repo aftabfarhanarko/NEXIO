@@ -81,9 +81,9 @@ const Register = () => {
         userCreatAt: new Date().toISOString(),
       };
       axiosApi.post("users", sendDB).then((res) => {
+        nagvit(`${locations.state ? locations.state : "/"}`);
         if (res.data.acknowledged) {
           toast.success("User Account Creat Successfully");
-          nagvit(`${locations.state ? locations.state : "/"}`);
         }
         console.log(sendDB);
       });
