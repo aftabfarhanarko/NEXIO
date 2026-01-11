@@ -16,6 +16,8 @@ import PrivetRouter from "../provider/PrivetRouter";
 import Dashbord from "../Components/Dashbord/Dashbord";
 import AdminRoute from "./AdminRoute";
 import ForbiddenAccess from "../Page/Home/ForbitinneAccess";
+import Profile from "../Page/Profile/Profile";
+import Settings from "../Page/Seatting/Settings";
 
 export const router = createBrowserRouter([
   {
@@ -77,8 +79,16 @@ export const router = createBrowserRouter([
         ),
       },
       {
-       path:'/notAdmin',
-       element: <ForbiddenAccess></ForbiddenAccess>
+        path: "/notAdmin",
+        element: <ForbiddenAccess></ForbiddenAccess>,
+      },
+      {
+        path: "/profile",
+        element: <Profile></Profile>,
+      },
+      {
+        path: "/settings",
+        element: <Settings></Settings>,
       },
       {
         path: "*",

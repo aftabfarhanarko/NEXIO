@@ -91,7 +91,7 @@ const Navbar = () => {
           </NavLink>
 
           <NavLink
-            to="/my-profile"
+            to="/profile"
             className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors"
             onClick={closeMobileMenu}
           >
@@ -188,7 +188,7 @@ const Navbar = () => {
                     <ul className="p-2">
                       <li>
                         <Link
-                          to="/my-profile"
+                          to="/profile"
                           className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-base-200 transition-colors"
                           onClick={() => setIsDropdownOpen(false)}
                         >
