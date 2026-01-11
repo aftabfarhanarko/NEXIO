@@ -14,6 +14,8 @@ import Login from "../Page/Form/Login";
 import Register from "../Page/Form/Register";
 import PrivetRouter from "../provider/PrivetRouter";
 import Dashbord from "../Components/Dashbord/Dashbord";
+import AdminRoute from "./AdminRoute";
+import ForbiddenAccess from "../Page/Home/ForbitinneAccess";
 
 export const router = createBrowserRouter([
   {
@@ -68,7 +70,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element:<Dashbord ></Dashbord>
+        element: (
+          <AdminRoute>
+            <Dashbord></Dashbord>
+          </AdminRoute>
+        ),
+      },
+      {
+       path:'/notAdmin',
+       element: <ForbiddenAccess></ForbiddenAccess>
       },
       {
         path: "*",

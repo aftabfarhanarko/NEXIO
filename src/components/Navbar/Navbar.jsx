@@ -15,9 +15,12 @@ import {
   Settings,
 } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosAPi from "../../hook/useAPi";
+import { toast } from "sonner";
 
 const Navbar = () => {
+  const axiosApi = useAxiosAPi();
   const { user, logOutUser } = useContext(AuthContext);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -100,6 +103,16 @@ const Navbar = () => {
     </>
   );
 
+  const { data: sinngleUser } = useQuery({
+    queryKey: [user?.email],
+    queryFn: async () => {
+      const res = await axiosApi.get(`singleUser?email=${user?.email}`);
+      console.log("Single User", res);
+      return res.data;
+    },
+  });
+  console.log(sinngleUser);
+
   return (
     <div className="bg-base-100 shadow-md sticky top-0 z-50 border-b border-base-300">
       <div className="navbar max-w-[1250px] mx-auto px-4">
@@ -144,7 +157,7 @@ const Navbar = () => {
                   <img
                     alt="User avatar"
                     src={
-                      user?.photoURL ||
+                      sinngleUser?.photoURL ||
                       "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                     }
                     className="rounded-full object-cover"
@@ -165,10 +178,10 @@ const Navbar = () => {
                   <div className="absolute right-0 mt-2 w-56 bg-base-100 rounded-lg shadow-xl border border-base-300 overflow-hidden z-20">
                     <div className="p-4 border-b border-base-300 bg-base-200">
                       <p className="font-semibold text-sm truncate">
-                        {user.displayName || "User"}
+                        {sinngleUser?.displayName || "User"}
                       </p>
                       <p className="text-xs text-base-content/60 truncate">
-                        {user.email}
+                        {sinngleUser?.email}
                       </p>
                     </div>
 
@@ -258,7 +271,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   );
 };
