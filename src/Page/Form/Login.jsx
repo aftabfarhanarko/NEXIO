@@ -3,14 +3,16 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
 import { motion } from "framer-motion";
 import { Mail, Lock, LogIn, ArrowRight } from "lucide-react";
+import useAxiosAPi from "../../hook/useAPi";
+import { toast } from "sonner";
 
 const Login = () => {
   const reaferncve = useRef(null);
   const [show, setShow] = useState(false);
-  const { loginUser, user, passwordResetEmail, googleProvider } =
+  const axiosApi = useAxiosAPi();
+  const { loginUser, passwordResetEmail, googleProvider } =
     useContext(AuthContext);
   const locations = useLocation();
   const nagvit = useNavigate();
@@ -41,8 +43,25 @@ const Login = () => {
   };
 
   const handelGoogle = () => {
-    googleProvider().then(() => {
-      nagvit(`${locations.state ? locations.state : "/"}`);
+    googleProvider().then((res) => {
+      const data = res.user;
+      const sendDB = {
+        email: data.email,
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+        providerId: data.providerId,
+        userCreatAt: new Date().toISOString(),
+      };
+      axiosApi.post("users", sendDB).then((res) => {
+        if (res.data.acknowledged) {
+          toast.success("User Login Successfully");
+          nagvit(`${locations.state ? locations.state : "/"}`);
+        } else {
+          toast.success(res.data.message);
+          nagvit(`${locations.state ? locations.state : "/"}`);
+        }
+        console.log(sendDB);
+      });
     });
   };
 
@@ -193,7 +212,6 @@ const Login = () => {
           </form>
         </div>
       </motion.div>
-      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
     </div>
   );
 };

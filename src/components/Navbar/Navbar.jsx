@@ -144,7 +144,7 @@ const Navbar = () => {
                   <img
                     alt="User avatar"
                     src={
-                      user.photoURL ||
+                      user?.photoURL ||
                       "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
                     }
                     className="rounded-full object-cover"
@@ -227,7 +227,7 @@ const Navbar = () => {
                   Login
                 </button>
               </Link>
-              <Link to="/auth/register" className="hidden sm:block">
+              <Link to="/auth/rigister" className="hidden sm:block">
                 <button className="btn btn-sm md:btn-md bg-gradient-to-tr from-[#632EE3] to-[#9F62F2] text-white border-none hover:opacity-90">
                   Register
                 </button>

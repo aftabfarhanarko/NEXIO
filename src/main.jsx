@@ -28,7 +28,7 @@ createRoot(document.getElementById("root")).render(
     <QueryClientProvider client={queryClient}>
       <ContextProvider>
         <RouterProvider router={router} />
-        <Toaster position="top-right" />
+      <Toaster position="top-right" />
       </ContextProvider>
       <ReactQueryDevtools></ReactQueryDevtools>
     </QueryClientProvider>

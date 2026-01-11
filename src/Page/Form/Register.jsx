@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useLocation } from "react-router";
 import { AuthContext } from "../../context/AuthContext";
-import { toast, ToastContainer } from "react-toastify";
+// import { toast, ToastContainer } from "react-toastify";
 import { motion } from "framer-motion";
 import {
   User,
@@ -15,13 +15,15 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router";
 import useAxiosAPi from "../../hook/useAPi";
+import { toast } from "sonner";
 
 const Register = () => {
   const [show, setShow] = useState(false);
   const locations = useLocation();
   const nagvit = useNavigate();
   const { creatUser, profileUbdeat, googleProvider } = useContext(AuthContext);
- const axiosApi  = useAxiosAPi()
+  const axiosApi = useAxiosAPi();
+
   const handelRegister = (e) => {
     e.preventDefault();
     const email = e.target.email?.value;
@@ -51,14 +53,15 @@ const Register = () => {
 
     creatUser(email, password)
       .then(() => {
-        toast.success("User Account Creat Successfully");
         profileUbdeat(userData).then(() => {
           console.log("User  Data", sendDB);
-          axiosApi.post("users", sendDB)
-          .then(res => {
-            console.log("Server Send", res);
-            
-          }) 
+          axiosApi.post("users", sendDB).then((res) => {
+            if (res.data.acknowledged) {
+              toast.success("User Account Creat Successfully");
+              nagvit(`${locations.state ? locations.state : "/"}`);
+            }
+            // console.log("Server Send", res);
+          });
         });
       })
       .catch((err) => {
@@ -69,8 +72,21 @@ const Register = () => {
   const handelGoogle = () => {
     googleProvider().then((res) => {
       console.log("Google Provider", res);
-
-      // nagvit(`${locations.state ? locations.state : "/"}`);
+      const data = res.user;
+      const sendDB = {
+        email: data.email,
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+        providerId: data.providerId,
+        userCreatAt: new Date().toISOString(),
+      };
+      axiosApi.post("users", sendDB).then((res) => {
+        if (res.data.acknowledged) {
+          toast.success("User Account Creat Successfully");
+          nagvit(`${locations.state ? locations.state : "/"}`);
+        }
+        console.log(sendDB);
+      });
     });
   };
 
@@ -250,7 +266,7 @@ const Register = () => {
           </form>
         </div>
       </motion.div>
-      <ToastContainer position="top-center" autoClose={3000} theme="colored" />
+      {/* <ToastContainer position="top-center" autoClose={3000} theme="colored" /> */}
     </div>
   );
 };
