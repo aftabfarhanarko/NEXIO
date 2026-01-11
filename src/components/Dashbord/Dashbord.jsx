@@ -45,6 +45,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AuthContext } from "../../context/AuthContext";
 import useAxiosAPi from "../../hook/useAPi";
 import { useQuery } from "@tanstack/react-query";
+import LoadingSpinner from "../LoadingSpinner";
+import { toast } from "sonner";
 
 const Dashbord = () => {
   const { user } = useContext(AuthContext);
@@ -54,16 +56,7 @@ const Dashbord = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeTab, setActiveTab] = useState("Dashboard");
 
-  // --- Mock Data ---
-  const userGrowthData = [
-    { name: "Jan", users: 4000, active: 2400 },
-    { name: "Feb", users: 3000, active: 1398 },
-    { name: "Mar", users: 2000, active: 9800 },
-    { name: "Apr", users: 2780, active: 3908 },
-    { name: "May", users: 1890, active: 4800 },
-    { name: "Jun", users: 2390, active: 3800 },
-    { name: "Jul", users: 3490, active: 4300 },
-  ];
+
 
   const revenueData = [
     { name: "Mon", revenue: 4000, cost: 2400 },
@@ -83,7 +76,11 @@ const Dashbord = () => {
   ];
 
   // ALl User Show userAll
-  const { data: allusers, isLoading } = useQuery({
+  const {
+    data: allusers,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: [user?.email],
     queryFn: async () => {
       const res = await axiosApi.get(`userAll`);
@@ -91,6 +88,30 @@ const Dashbord = () => {
     },
   });
   console.log(allusers);
+
+  const updeatNow = (role, id) => {
+    axiosApi
+      .patch("/updeatRole", {
+        role,
+        id,
+      })
+      .then((res) => {
+        toast.success(`Updeat Role ${role}`);
+        console.log("Role updated", res.data);
+        refetch();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
+  const handleMakeAdmin = (user) => {
+    updeatNow("admin", user._id);
+  };
+
+  const handleMakeUser = (user) => {
+    updeatNow("user", user._id);
+  };
 
   // Animation Variants
   const containerVariants = {
@@ -112,6 +133,9 @@ const Dashbord = () => {
     },
   };
 
+  if (isLoading) {
+    return <LoadingSpinner></LoadingSpinner>;
+  }
   return (
     <div className="min-h-screen bg-base-200 flex font-sans overflow-hidden relative selection:bg-primary/20">
       {/* Dynamic Background Elements */}
@@ -633,129 +657,6 @@ const Dashbord = () => {
                   </div>
                 </motion.div>
               </div>
-
-              {/* Charts Row 2: Bar & Line */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* User Activity Bar Chart */}
-                <motion.div
-                  variants={itemVariants}
-                  className="bg-base-100/70 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-base-content/5 border border-white/20"
-                >
-                  <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-                    <span className="w-2 h-8 bg-accent rounded-full"></span>
-                    Weekly User Activity
-                  </h3>
-                  <div className="h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={userGrowthData} barGap={8}>
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          vertical={false}
-                          strokeOpacity={0.06}
-                        />
-                        <XAxis
-                          dataKey="name"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#9ca3af", fontSize: 12 }}
-                          dy={10}
-                        />
-                        <YAxis
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#9ca3af", fontSize: 12 }}
-                        />
-                        <Tooltip
-                          cursor={{ fill: "rgba(0,0,0,0.02)" }}
-                          contentStyle={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            backdropFilter: "blur(8px)",
-                            border: "none",
-                            borderRadius: "12px",
-                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                          }}
-                        />
-                        <Bar
-                          dataKey="users"
-                          fill="#6366f1"
-                          radius={[6, 6, 6, 6]}
-                          barSize={16}
-                        >
-                          {userGrowthData.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fillOpacity={0.8 + index * 0.05}
-                            />
-                          ))}
-                        </Bar>
-                        <BarChart
-                          dataKey="active"
-                          fill="#e5e7eb"
-                          radius={[6, 6, 6, 6]}
-                          barSize={16}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
-
-                {/* Performance Line Chart */}
-                <motion.div
-                  variants={itemVariants}
-                  className="bg-base-100/70 backdrop-blur-xl p-8 rounded-[2.5rem] shadow-xl shadow-base-content/5 border border-white/20"
-                >
-                  <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
-                    <span className="w-2 h-8 bg-warning rounded-full"></span>
-                    App Performance Trends
-                  </h3>
-                  <div className="h-[300px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={revenueData}>
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          vertical={false}
-                          strokeOpacity={0.06}
-                        />
-                        <XAxis
-                          dataKey="name"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#9ca3af", fontSize: 12 }}
-                          dy={10}
-                        />
-                        <YAxis
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fill: "#9ca3af", fontSize: 12 }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "rgba(255, 255, 255, 0.8)",
-                            backdropFilter: "blur(8px)",
-                            border: "none",
-                            borderRadius: "12px",
-                            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                          }}
-                        />
-                        <LineChart
-                          type="monotone"
-                          dataKey="revenue"
-                          stroke="#f59e0b"
-                          strokeWidth={4}
-                          dot={{ r: 0 }}
-                          activeDot={{
-                            r: 8,
-                            strokeWidth: 0,
-                            fill: "#f59e0b",
-                            stroke: "#fff",
-                            strokeWidth: 3,
-                          }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </motion.div>
-              </div>
             </>
           )}
 
@@ -903,9 +804,63 @@ const Dashbord = () => {
                                   : "N/A"}
                               </td>
                               <td className="py-6 px-6 text-right">
-                                <button className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:scale-105 transition-all duration-300">
-                                  Manage
-                                </button>
+                                {user?.role === "user" ? (
+                                  <button
+                                    onClick={() => handleMakeAdmin(user)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                  >
+                                    {/* Admin Icon */}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M12 4.5l7 4-7 4-7-4 7-4z"
+                                      />
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 12l7 4 7-4"
+                                      />
+                                    </svg>
+                                    Make Admin
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleMakeUser(user)}
+                                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm font-medium hover:shadow-lg hover:scale-105 transition-all duration-300"
+                                  >
+                                    {/* User Icon */}
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                      stroke="currentColor"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                      />
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 18a8 8 0 0116 0"
+                                      />
+                                    </svg>
+                                    Make User
+                                  </button>
+                                )}
                               </td>
                             </motion.tr>
                           ))}
