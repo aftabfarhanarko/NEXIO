@@ -86,7 +86,7 @@ const Dashbord = () => {
     },
   });
 
-  console.log(allusers);
+  // console.log(allusers);
 
   const updeatNow = (role, id) => {
     axiosApi
@@ -134,9 +134,9 @@ const Dashbord = () => {
 
   console.log(isLoading);
   
-  if (isLoading) {
-    return <LoadingSpinner></LoadingSpinner>;
-  }
+  // if (isLoading) {
+  //   return <LoadingSpinner></LoadingSpinner>;
+  // }
   return (
     <div className="min-h-screen bg-base-200 flex font-sans overflow-hidden relative selection:bg-primary/20">
       {/* Dynamic Background Elements */}
@@ -687,7 +687,7 @@ const Dashbord = () => {
                   All Users List
                 </h3>
                 <div className="badge badge-primary badge-lg">
-                  {/* {allusers?.length} Users */}
+                  {allusers?.length} Users
                 </div>
               </div>
 
