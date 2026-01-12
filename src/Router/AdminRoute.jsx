@@ -17,6 +17,8 @@ const AdminRoute = ({ children }) => {
       return res.data.role; // 👉 only "admin"
     },
   });
+  console.log(role);
+  
 
   // 🔄 loading state
   if (loading || isLoading) {

@@ -54,7 +54,7 @@ const Register = () => {
     creatUser(email, password)
       .then(() => {
         profileUbdeat(userData).then(() => {
-          console.log("User  Data", sendDB);
+          // console.log("User  Data", sendDB);
           axiosApi.post("users", sendDB).then((res) => {
             if (res.data.acknowledged) {
               toast.success("User Account Creat Successfully");
@@ -71,7 +71,7 @@ const Register = () => {
 
   const handelGoogle = () => {
     googleProvider().then((res) => {
-      console.log("Google Provider", res);
+      // console.log("Google Provider", res);
       const data = res.user;
       const sendDB = {
         email: data.email,
@@ -85,7 +85,7 @@ const Register = () => {
         if (res.data.acknowledged) {
           toast.success("User Account Creat Successfully");
         }
-        console.log(sendDB);
+        // console.log(sendDB);
       });
     });
   };

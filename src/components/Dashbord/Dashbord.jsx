@@ -56,8 +56,6 @@ const Dashbord = () => {
   const [searchFocused, setSearchFocused] = useState(false);
   const [activeTab, setActiveTab] = useState("Dashboard");
 
-
-
   const revenueData = [
     { name: "Mon", revenue: 4000, cost: 2400 },
     { name: "Tue", revenue: 3000, cost: 1398 },
@@ -81,12 +79,13 @@ const Dashbord = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: [user?.email],
+    queryKey: ["admin"],
     queryFn: async () => {
       const res = await axiosApi.get(`userAll`);
-      return res.data;
+      return res?.data;
     },
   });
+
   console.log(allusers);
 
   const updeatNow = (role, id) => {
@@ -95,9 +94,9 @@ const Dashbord = () => {
         role,
         id,
       })
-      .then((res) => {
+      .then(() => {
         toast.success(`Updeat Role ${role}`);
-        console.log("Role updated", res.data);
+        // console.log("Role updated", res.data);
         refetch();
       })
       .catch((err) => {
@@ -133,6 +132,8 @@ const Dashbord = () => {
     },
   };
 
+  console.log(isLoading);
+  
   if (isLoading) {
     return <LoadingSpinner></LoadingSpinner>;
   }
@@ -686,7 +687,7 @@ const Dashbord = () => {
                   All Users List
                 </h3>
                 <div className="badge badge-primary badge-lg">
-                  {allusers?.length || 0} Users
+                  {/* {allusers?.length} Users */}
                 </div>
               </div>
 

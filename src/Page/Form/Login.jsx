@@ -10,12 +10,19 @@ import { toast } from "sonner";
 
 const Login = () => {
   const reaferncve = useRef(null);
+  const passwordRef = useRef(null);
   const [show, setShow] = useState(false);
   const axiosApi = useAxiosAPi();
   const { loginUser, passwordResetEmail, googleProvider } =
     useContext(AuthContext);
   const locations = useLocation();
   const nagvit = useNavigate();
+
+  const fillAdminCredentials = () => {
+    if (reaferncve.current) reaferncve.current.value = "admin@example.com";
+    if (passwordRef.current) passwordRef.current.value = "Admin@@12345";
+    toast.success("Admin credentials filled!");
+  };
 
   const handelLogin = (e) => {
     e.preventDefault();
@@ -104,6 +111,37 @@ const Login = () => {
             </p>
           </div>
 
+          {/* Admin Credentials Box */}
+          <div className="bg-base-200/50 p-4 rounded-2xl mb-6 border border-base-content/10 flex flex-col sm:flex-row justify-between items-center gap-4 group hover:bg-base-200/80 transition-colors">
+            <div>
+              <p className="text-xs font-bold text-primary uppercase tracking-wider mb-1 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                Admin Access
+              </p>
+              <div className="text-xs font-mono text-base-content/70 space-y-1">
+                <p>
+                  User:{" "}
+                  <span className="select-all font-bold text-base-content">
+                    admin@example.com
+                  </span>
+                </p>
+                <p>
+                  Pass:{" "}
+                  <span className="select-all font-bold text-base-content">
+                    Admin@@12345
+                  </span>
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={fillAdminCredentials}
+              type="button"
+              className="btn btn-sm btn-primary shadow-lg shadow-primary/20 rounded-xl"
+            >
+              Auto Fill
+            </button>
+          </div>
+
           <form onSubmit={handelLogin} className="space-y-6">
             <fieldset className="fieldset p-0 border-none bg-transparent m-0 gap-6">
               {/* Email */}
@@ -136,6 +174,7 @@ const Login = () => {
                     <Lock size={20} />
                   </div>
                   <input
+                    ref={passwordRef}
                     type={show ? "text" : "password"}
                     className="input w-full pl-12 pr-12 h-12 bg-base-200/50 border-transparent focus:bg-base-100 focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl transition-all font-medium"
                     placeholder="Enter your password"

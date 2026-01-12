@@ -107,11 +107,11 @@ const Navbar = () => {
     queryKey: [user?.email],
     queryFn: async () => {
       const res = await axiosApi.get(`singleUser?email=${user?.email}`);
-      console.log("Single User", res);
+      // console.log("Single User", res);
       return res.data;
     },
   });
-  console.log(sinngleUser);
+  // console.log(sinngleUser);
 
   return (
     <div className="bg-base-100 shadow-md sticky top-0 z-50 border-b border-base-300">
